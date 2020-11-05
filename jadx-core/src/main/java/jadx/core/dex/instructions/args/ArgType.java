@@ -65,6 +65,7 @@ public abstract class ArgType {
 	public static final ArgType WIDE = unknown(PrimitiveType.LONG, PrimitiveType.DOUBLE);
 
 	public static final ArgType INT_FLOAT = unknown(PrimitiveType.INT, PrimitiveType.FLOAT);
+	public static final ArgType INT_BOOLEAN = unknown(PrimitiveType.INT, PrimitiveType.BOOLEAN);
 
 	protected int hash;
 
@@ -673,6 +674,18 @@ public abstract class ArgType {
 	public boolean canBePrimitive(PrimitiveType primitiveType) {
 		return (isPrimitive() && getPrimitiveType() == primitiveType)
 				|| (!isTypeKnown() && contains(primitiveType));
+	}
+
+	public boolean canBeAnyNumber() {
+		if (isPrimitive()) {
+			return !getPrimitiveType().isObjectOrArray();
+		}
+		for (PrimitiveType primitiveType : getPossibleTypes()) {
+			if (!primitiveType.isObjectOrArray()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public static ArgType convertFromPrimitiveType(PrimitiveType primitiveType) {
